@@ -1,0 +1,10 @@
+# Đã đối chiếu API với TRL 1.16 / tài liệu Hugging Face tháng 10/2026.
+trl==1.16.0
+transformers>=4.56.2,<6
+torch>=2.6
+peft>=0.17
+accelerate>=1.10.1
+datasets>=4.7
+safetensors>=0.5
+pyyaml>=6
+# 4-bit QLoRA: cài bitsandbytes>=0.45.1 riêng trên GPU CUDA tương thích.
