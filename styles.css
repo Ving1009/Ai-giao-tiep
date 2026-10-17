@@ -79,3 +79,6 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .status-dot.ready{background:#47d7aa}
 .stop{border:1px solid #8576bb;border-radius:10px;background:#292344;color:#eee9ff;padding:11px 12px;font-size:12px;flex-shrink:0}
 .stop:hover{background:#40335e}
+
+.message.system .message-icon{background:#49321f;color:#f9c47e}
+.message.system .bubble{background:#30251d;border-color:#6a4a32;color:#f8dbc2}

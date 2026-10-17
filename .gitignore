@@ -17,3 +17,4 @@ outputs/
 *.ckpt
 .DS_Store
 .vercel/
+training/datasets/processed/

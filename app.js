@@ -24,7 +24,7 @@ function restore() {
         id: c.id.slice(0, 80), title: c.title.slice(0, 80),
         updated: Number(c.updated) || Date.now(),
         messages: c.messages.slice(-100).filter(m => m && typeof m.text === "string" &&
-          (m.role === "user" || m.role === "assistant")).map(m => ({
+          (["user", "assistant", "system"].includes(m.role))).map(m => ({
           role: m.role, text: m.text.slice(0, 4000), time: Number(m.time) || Date.now()
         }))
       }));
@@ -73,7 +73,7 @@ function renderMessages() {
   el("welcome").hidden = chat.messages.length > 0;
   for (const message of chat.messages) {
     const wrapper = document.createElement("article");
-    wrapper.className = "message" + (message.role === "user" ? " user" : "");
+    wrapper.className = "message" + (message.role === "user" ? " user" : message.role === "system" ? " system" : "");
     const icon = document.createElement("div");
     icon.className = "message-icon";
     icon.textContent = message.role === "user" ? "B" : "✦";
@@ -86,7 +86,7 @@ function renderMessages() {
     const time = document.createElement("time");
     time.className = "message-time";
     time.dateTime = new Date(message.time).toISOString();
-    time.textContent = (message.role === "user" ? "Bạn" : "Demo") + " · " +
+    time.textContent = (message.role === "user" ? "Bạn" : message.role === "system" ? "Hệ thống" : "AI") + " · " +
       new Date(message.time).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
     content.append(bubble, time);
     wrapper.append(icon, content);
@@ -165,9 +165,9 @@ async function submitMessage() {
     addMessage("assistant", answer, id);
   } catch (error) {
     const stopped = activeController.signal.aborted;
-    addMessage("assistant", stopped
-      ? "⚠️ [Hệ thống] Đã dừng hoặc hết thời gian chờ. Không có phản hồi AI."
-      : "⚠️ [Hệ thống] " + (error.message || "Không thể kết nối mô hình AI."), id);
+    addMessage("system", stopped
+      ? "⚠️ Đã dừng hoặc hết thời gian chờ. Không có phản hồi AI."
+      : "⚠️ " + (error.message || "Không thể kết nối mô hình AI."), id);
   } finally {
     clearTimeout(timeout);
     if (controller === activeController) controller = null;
