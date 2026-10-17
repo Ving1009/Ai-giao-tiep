@@ -1,33 +1,46 @@
-# AI Giao Tiếp
+# AI Giao Tiếp — Qwen3 + TRL + Vercel
 
-Giao diện web thử nghiệm để phát triển AI giao tiếp tiếng Việt trong tương lai.
+Dự án thử nghiệm AI giao tiếp tiếng Việt riêng cho hệ sinh thái Tính Điểm THPT.
 
-**Lưu ý:** Hiện tại chưa có AI thật, backend hay API. Tin nhắn phản hồi được sinh từ hàm JavaScript **mockReply()** theo các kịch bản viết sẵn.
+## Trạng thái thực tế
 
-## Chạy thử
+- ✅ Frontend chat HTML/CSS/JS thuần, responsive, lưu hội thoại localStorage.
+- ✅ Giao diện kết nối /api/chat và /api/health; **không còn mockReply()**.
+- ✅ Vercel proxy giữ secret, FastAPI inference server tải mô hình open-weights.
+- ✅ Script chuẩn bị dữ liệu, TRL SFT/LoRA, DPO tùy chọn, xuất adapter và eval.
+- ✅ Dataset 35 mẫu hội thoại *chưa review* và 10 câu hỏi eval độc lập.
+- ⏳ CHƯA chạy fine-tune, chưa có adapter do dự án này train.
+- ⏳ CHƯA triển khai GPU inference, chưa xác nhận Vercel đã deploy bản này.
+- ⏳ CHƯA tích hợp vào tinhdiemthpt.id.vn; repo chính chỉ được đọc.
 
-1. Clone hoặc tải repository.
-2. Mở **index.html** trên trình duyệt (không cần cài thư viện, chạy npm hay máy chủ).
-3. Nhập nội dung, nhấn Enter để gửi; Shift + Enter để xuống dòng.
+Mô hình nền: [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) (Apache-2.0).
+Hệ thống KHÔNG chuyển sang ChatGPT/Gemini/Groq khi model không khả dụng.
 
-Trang có thể triển khai bằng GitHub Pages hoặc dịch vụ hosting tĩnh khác sau khi cấu hình hosting.
+## Đọc tiếp
 
-## Tính năng
+- [Kiến trúc](docs/architecture.md)
+- [Huấn luyện](docs/training.md)
+- [Triển khai](docs/deployment.md)
+- [Đánh giá](docs/evaluation.md)
+- [Định hướng tích hợp THPT](docs/integration-thpt.md)
+- [Data card](training/datasets/DATA_CARD.md)
+- [Notebook Colab](notebooks/train_colab.ipynb)
 
-- Giao diện chat responsive trên điện thoại và máy tính.
-- Gửi tin nhắn, phản hồi giả lập và hiệu ứng đang trả lời.
-- Hội thoại mới, chọn lịch sử, xóa tin nhắn hiện tại.
-- Lưu tối đa 20 hội thoại trong localStorage (trên trình duyệt của thiết bị, không gửi về server).
-- Tin nhắn được hiển thị an toàn bằng textContent.
+## Chạy frontend cục bộ
 
-## Cấu trúc
+Mở index.html hoặc dùng một static server. Không có mô hình nối sẵn,
+frontend sẽ hiển thị trạng thái chưa kết nối chứ không tự giả câu trả lời.
 
-- **index.html**: bố cục.
-- **styles.css**: thiết kế, responsive.
-- **app.js**: quản lý trạng thái, lịch sử và phản hồi mẫu.
+## Chạy kiểm tra CPU
 
-## Bước phát triển tiếp theo
+node --test tests/test_proxy.js tests/test_thpt_adapter.mjs
+python -m unittest discover -s tests -p "test_*.py"
+python -m training.prepare_data
 
-Thay **mockReply()** trong app.js bằng lời gọi tới backend chạy mô hình AI. Không để API key ở frontend. Khi thêm máy chủ, cần cập nhật thông báo quyền riêng tư và trạng thái kết nối AI.
+Python schema tests cần pydantic 2.x. Không cần GPU cho các bước này.
 
-Xóa dữ liệu trang web sẽ xóa lịch sử demo trong trình duyệt.
+## Mục tiêu tiếp theo
+
+Cấp quyền sử dụng GPU hợp lệ (có thể trên Colab), review/mở rộng dữ liệu,
+chạy smoke 1 bước rồi fine-tune, kiểm chứng chất lượng base vs adapter và
+triển khai inference server. Xem docs/deployment.md để thiết lập secret an toàn.

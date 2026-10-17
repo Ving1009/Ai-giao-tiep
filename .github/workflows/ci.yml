@@ -1,0 +1,35 @@
+name: Static checks (CPU only)
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check api/chat.js
+          node --check api/health.js
+          node --check lib/proxy.js
+          node --check integrations/thpt/adapter.mjs
+      - name: Test JavaScript
+        run: node --test tests/test_proxy.js tests/test_thpt_adapter.mjs
+      - name: Check Python syntax
+        run: python -m compileall -q training inference tests
+      - name: Install schema-test-only dependencies
+        run: python -m pip install "pydantic>=2.8,<3"
+      - name: Test Python
+        run: python -m unittest discover -s tests -p "test_*.py"
+      - name: Validate curated dataset and splits
+        run: python -m training.prepare_data
+      - name: Verify notebook is valid JSON
+        run: python -m json.tool notebooks/train_colab.ipynb > /dev/null
