@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Bản demo giao diện chat tiếng Việt, chưa kết nối AI.">
+  <title>AI Giao Tiếp — Demo</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Menu trò chuyện">
+      <div class="brand"><div class="brand-logo" aria-hidden="true">✦</div><div><strong>AI Giao Tiếp</strong><span>Không gian trò chuyện</span></div></div>
+      <button id="new-chat" class="new-chat" type="button">＋ Cuộc trò chuyện mới</button>
+      <div class="sidebar-label">LỊCH SỬ TRÊN THIẾT BỊ</div>
+      <nav id="chat-history" class="history" aria-label="Các cuộc trò chuyện"></nav>
+      <div class="sidebar-note"><span aria-hidden="true">◈</span><div><b>Bản thử giao diện</b><p>Chưa có mô hình AI. Tin nhắn chỉ lưu trên trình duyệt này.</p></div></div>
+    </aside>
+    <button class="backdrop" id="backdrop" type="button" aria-label="Đóng menu" hidden></button>
+    <main class="main">
+      <header class="topbar">
+        <div class="identity">
+          <button id="menu-button" class="menu-button" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="sidebar">☰</button>
+          <span class="bot-logo" aria-hidden="true">✦</span>
+          <div><strong>Trợ lý giao tiếp</strong><small><i class="status-dot" aria-hidden="true"></i> Demo · chưa kết nối AI</small></div>
+        </div>
+        <button id="clear-chat" class="clear-chat" type="button">Xóa chat</button>
+      </header>
+      <section class="conversation-scroll" id="conversation-scroll" aria-label="Nội dung trò chuyện">
+        <div class="conversation">
+          <div class="welcome" id="welcome">
+            <div class="welcome-icon" aria-hidden="true">✦</div>
+            <div class="eyebrow">KHÔNG GIAN THỬ NGHIỆM</div>
+            <h1>Bắt đầu một cuộc trò chuyện.</h1>
+            <p>Đây là bản thử giao diện cho AI tiếng Việt của riêng bạn. Phản hồi hiện tại chỉ là <strong>nội dung mẫu được lập trình sẵn</strong>, chưa phải AI thật.</p>
+            <div class="prompts">
+              <button type="button" data-prompt="Chào bạn!">👋 Chào bạn!</button>
+              <button type="button" data-prompt="Bạn có thể làm gì?">✨ Bạn có thể làm gì?</button>
+              <button type="button" data-prompt="Kể cho mình một câu chuyện.">📖 Kể chuyện thử xem</button>
+              <button type="button" data-prompt="Mình muốn học điều mới.">💡 Học điều mới</button>
+            </div>
+          </div>
+          <div id="messages" class="messages" role="log" aria-label="Tin nhắn" aria-live="polite" aria-relevant="additions"></div>
+          <div id="typing" class="typing" role="status" hidden><span class="message-icon" aria-hidden="true">✦</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="sr-only">Đang tạo phản hồi mẫu</span></div>
+        </div>
+      </section>
+      <div class="composer-section">
+        <form id="composer" class="composer">
+          <label class="sr-only" for="message-input">Nhập tin nhắn</label>
+          <textarea id="message-input" rows="1" maxlength="4000" placeholder="Nhắn gì đó để thử giao diện..." autocomplete="off"></textarea>
+          <button id="send" class="send" type="submit" aria-label="Gửi tin nhắn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </form>
+        <p class="note">Chế độ demo · Enter để gửi, Shift + Enter để xuống dòng · Không gửi dữ liệu lên máy chủ</p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
