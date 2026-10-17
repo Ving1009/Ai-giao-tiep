@@ -75,3 +75,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 }
 @media(max-width:365px){.prompts{grid-template-columns:1fr}.identity small{font-size:10px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+.status-dot.ready{background:#47d7aa}
+.stop{border:1px solid #8576bb;border-radius:10px;background:#292344;color:#eee9ff;padding:11px 12px;font-size:12px;flex-shrink:0}
+.stop:hover{background:#40335e}

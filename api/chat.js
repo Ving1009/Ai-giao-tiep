@@ -1,5 +1,5 @@
 "use strict";
-const { send, configured, sameOrigin, limit, validate, upstream } = require("./_shared");
+const { send, configured, sameOrigin, limit, validate, upstream } = require("../lib/proxy");
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") return send(res, 405, { status: "error", error: "METHOD_NOT_ALLOWED" });
   if (!sameOrigin(req)) return send(res, 403, { status: "error", error: "ORIGIN_NOT_ALLOWED" });

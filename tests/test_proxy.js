@@ -1,7 +1,7 @@
 "use strict";
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
-const { validate, configured, sameOrigin } = require("../api/_shared");
+const { validate, configured, sameOrigin } = require("../lib/proxy");
 test("accepts valid conversation", () => {
   const v = validate({ question: "Xin chào", history: [{role: "user", content: "Chào"}] });
   assert.equal(v.history.length, 1);

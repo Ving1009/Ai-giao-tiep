@@ -24,7 +24,7 @@
         <div class="identity">
           <button id="menu-button" class="menu-button" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="sidebar">☰</button>
           <span class="bot-logo" aria-hidden="true">✦</span>
-          <div><strong>Trợ lý giao tiếp</strong><small><i class="status-dot" aria-hidden="true"></i> Demo · chưa kết nối AI</small></div>
+          <div><strong>Trợ lý giao tiếp</strong><small><i id="status-dot" class="status-dot" aria-hidden="true"></i> <span id="model-status">Đang kiểm tra kết nối AI...</span></small></div>
         </div>
         <button id="clear-chat" class="clear-chat" type="button">Xóa chat</button>
       </header>
@@ -50,9 +50,10 @@
         <form id="composer" class="composer">
           <label class="sr-only" for="message-input">Nhập tin nhắn</label>
           <textarea id="message-input" rows="1" maxlength="4000" placeholder="Nhắn gì đó để thử giao diện..." autocomplete="off"></textarea>
+          <button id="stop" class="stop" type="button" hidden aria-label="Dừng tạo phản hồi">Dừng</button>
           <button id="send" class="send" type="submit" aria-label="Gửi tin nhắn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
         </form>
-        <p class="note">Chế độ demo · Enter để gửi, Shift + Enter để xuống dòng · Không gửi dữ liệu lên máy chủ</p>
+        <p class="note">Chế độ AI thật chỉ hoạt động khi máy chủ đã sẵn sàng · Không nhập thông tin nhạy cảm · Enter để gửi</p>
       </div>
     </main>
   </div>

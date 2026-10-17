@@ -92,7 +92,7 @@ function renderMessages() {
     wrapper.append(icon, content);
     messagesEl.append(wrapper);
   }
-  el("typing").hidden = !pending;
+  el("typing").hidden = !(pending && activeId === pendingChatId);
   requestAnimationFrame(() => { scroll.scrollTop = scroll.scrollHeight; });
 }
 function addMessage(role, text, id) {
@@ -107,48 +107,79 @@ function addMessage(role, text, id) {
   renderHistory();
   if (activeId === id) renderMessages();
 }
-// Phản hồi kịch bản cố định — KHÔNG phải AI.
-function mockReply(message) {
-  const text = message.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (/\b(chao|hello|hi|xin chao)\b/.test(text))
-    return "Xin chào! 👋 Mình là bản demo giao diện, rất vui được gặp bạn!";
-  if (/ban co the lam gi|lam duoc gi|chuc nang/.test(text))
-    return "Mình đang thử giao diện gửi và nhận tin nhắn, lưu lịch sử và hiển thị phản hồi. Hiện chưa có mô hình AI thật.";
-  if (/ten (ban|cau)|ban ten gi/.test(text))
-    return "Bạn có thể gọi mình là AI Giao Tiếp Demo. Đây là câu trả lời được viết sẵn.";
-  if (/cam on|thanks|thank you/.test(text))
-    return "Không có gì! 💜 Đây vẫn chỉ là phản hồi mô phỏng.";
-  if (/chuyen|ke cho|cau chuyen/.test(text))
-    return "Một ngày nọ, chiếc máy tính nhỏ bật sáng và nói: “Xin chào thế giới!” Đó là điểm khởi đầu của một hành trình khám phá.\n\n(Đây là truyện mẫu viết sẵn, không phải do AI tạo.)";
-  if (/hoc|kien thuc|dieu moi/.test(text))
-    return "Một điều mới: giao diện bạn đang sử dụng chạy bằng HTML, CSS và JavaScript, không cần máy chủ để thử các thao tác chat.";
-  if (/ai|tri tue nhan tao|mo hinh/.test(text))
-    return "Dự án hiện chưa tích hợp AI hoặc API nào. Sau này có thể thay hàm mockReply() bằng kết nối đến backend chạy mô hình riêng.";
-  return "Mình đã nhận được tin nhắn! 💬 Đây là phản hồi mẫu để kiểm tra giao diện, chưa phải câu trả lời do AI tạo ra.";
+// Không có phản hồi mẫu: mọi câu trả lời chỉ đến từ API mô hình thật.
+let controller = null;
+let pendingChatId = null;
+function setModelStatus(ready, label) {
+  el("model-status").textContent = label;
+  el("status-dot").classList.toggle("ready", ready);
+}
+async function checkModelStatus() {
+  try {
+    const response = await fetch("/api/health", { cache: "no-store" });
+    const info = await response.json();
+    if (!response.ok || info.status !== "ready") throw Error("Mô hình chưa khả dụng");
+    setModelStatus(true, (info.model || "AI") + " · " + (info.version || "base"));
+  } catch (_) {
+    setModelStatus(false, "Chưa kết nối mô hình AI");
+  }
+}
+async function requestModel(question, history, signal) {
+  const response = await fetch("/api/chat", {
+    method: "POST", signal,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question, history, options: { max_new_tokens: 256, temperature: 0.7 } })
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || payload?.status !== "ok" || payload?.mode !== "model" ||
+      typeof payload?.answer !== "string") {
+    setModelStatus(false, "Mô hình chưa khả dụng");
+    throw Error(payload?.message || "Máy chủ mô hình hiện không phản hồi.");
+  }
+  setModelStatus(true, (payload.model || "AI") + " · " + (payload.version || "base"));
+  return payload.answer;
 }
 function refreshComposer() {
   send.disabled = pending || !input.value.trim();
+  el("stop").hidden = !pending;
   input.style.height = "auto";
   input.style.height = Math.min(input.scrollHeight, 160) + "px";
 }
-function submitMessage() {
+async function submitMessage() {
   const text = input.value.trim();
   if (!text || pending) return;
   const id = activeId;
+  const history = current().messages.filter(m => m.role === "user" || m.role === "assistant")
+    .slice(-12).map(m => ({ role: m.role, content: m.text }));
   input.value = "";
   addMessage("user", text, id);
   pending = true;
+  pendingChatId = id;
+  controller = new AbortController();
+  const activeController = controller;
+  const timeout = setTimeout(() => activeController.abort(), 47000);
   renderMessages();
   refreshComposer();
-  setTimeout(() => {
-    addMessage("assistant", mockReply(text), id);
+  try {
+    const answer = await requestModel(text, history, activeController.signal);
+    addMessage("assistant", answer, id);
+  } catch (error) {
+    const stopped = activeController.signal.aborted;
+    addMessage("assistant", stopped
+      ? "⚠️ [Hệ thống] Đã dừng hoặc hết thời gian chờ. Không có phản hồi AI."
+      : "⚠️ [Hệ thống] " + (error.message || "Không thể kết nối mô hình AI."), id);
+  } finally {
+    clearTimeout(timeout);
+    if (controller === activeController) controller = null;
     pending = false;
+    pendingChatId = null;
     renderMessages();
     refreshComposer();
-  }, 600);
+  }
 }
 el("composer").addEventListener("submit", e => { e.preventDefault(); submitMessage(); });
 input.addEventListener("input", refreshComposer);
+el("stop").addEventListener("click", () => { if (controller) controller.abort(); });
 input.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
     e.preventDefault();
@@ -193,3 +224,5 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu();
 renderHistory();
 renderMessages();
 refreshComposer();
+
+checkModelStatus();
