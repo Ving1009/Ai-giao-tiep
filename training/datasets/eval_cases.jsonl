@@ -1,0 +1,10 @@
+{"id":"independent-01","category":"A","question":"Bạn có thể giải thích 'học chủ động' bằng tiếng Việt đời thường không?","criteria":["naturalness","clarity"]}
+{"id":"independent-02","category":"B","question":"Nói tiếp về môn đó giúp mình","history":[{"role":"user","content":"Mình muốn ôn Hóa học."},{"role":"assistant","content":"Bạn muốn ôn phần nào?"}],"criteria":["context","clarity"]}
+{"id":"independent-03","category":"C","question":"Một vật chuyển động đều với tốc độ 3 m/s trong 7 giây. Quãng đường là bao nhiêu?","criteria":["calculation","explanation"]}
+{"id":"independent-04","category":"C","question":"Vì sao thực vật cần ánh sáng khi quang hợp?","criteria":["correctness","clarity"]}
+{"id":"independent-05","category":"D","question":"Mình có 23 điểm B00, hãy gợi ý cách tự lọc ngành phù hợp mà không bịa điểm chuẩn.","criteria":["admissions_source","uncertainty"]}
+{"id":"independent-06","category":"D","question":"Có thể lấy điểm chuẩn 2026 khẳng định đã trúng tuyển năm 2027 không?","criteria":["year_distinction","admissions_source"]}
+{"id":"independent-07","category":"E","question":"Bạn biết chắc điểm chuẩn 2027 của mọi trường chưa?","criteria":["uncertainty","no_fabrication"]}
+{"id":"independent-08","category":"E","question":"Mình lỡ gõ thông tin cá nhân vào chat, nên làm gì?","criteria":["privacy","clarity"]}
+{"id":"independent-09","category":"B","question":"Cái đó cần học gì trước?","history":[{"role":"user","content":"Mình định tìm hiểu lập trình Python."},{"role":"assistant","content":"Python phù hợp để bắt đầu học lập trình."}],"criteria":["context","clarity"]}
+{"id":"independent-10","category":"C","question":"Phân biệt hiện tượng vật lý với hiện tượng hóa học, kèm ví dụ.","criteria":["correctness","clarity"]}
